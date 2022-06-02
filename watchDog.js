@@ -154,7 +154,7 @@ class WatchDog {
       var contract = new web3.eth.Contract(data, address);
       const { _jsonInterface } = contract;
       const mintFuncs = _jsonInterface.filter(func => {
-        return /mint/.test((func.name || '').toLowerCase());
+        return /mint/.test((func.name || '').toLowerCase()) && !isWhiteList(func.name);
       });
       return mintFuncs;
     });
@@ -180,6 +180,21 @@ class WatchDog {
     return abis.find(e => e.signature === methodId)?.name;
   }
 
+  /**
+   *过滤白名单
+   *@param funname
+   *@returns bool
+   */
+  isWhiteList(funname){
+    var whiteArr = ["white","claim"];
+    for(var i = 0; i < whiteArr.length; i++) {
+      if(funname.includes(whiteArr[i])) {
+        return true
+      }
+    }
+    return false
+  }
+  
   /**
    * 该交易是否免费
    * @param {*} txData 
